@@ -7,11 +7,9 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
     <link rel="icon" href="{{ asset('Assets/Logo Kedai Batatua 1928.png') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset ('css/app.css') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -93,28 +91,51 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+         .nav-link {
+            position: relative;
+            color: #000;
+            transition: color 0.3s;
+        }
+        .nav-link::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+            width: 0;
+            height: 2px;
+            background-color: #facc15;
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+         .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
-<body class="bg-gradient-to-b from-amber-50 via-yellow-50 to-amber-50 scroll-smooth">
+<body class="font-sans antialiased bg-gradient-to-b from-amber-50 via-yellow-50 to-amber-50 scroll-smooth">
     <header>
         <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 py-4 transition-all duration-500">
             <div class="container mx-auto px-6 flex items-center justify-between">
                 <div class="flex items-center -ml-2">
-                     <a href="dashboard-utama.html" class="flex items-center">
-        <img src="Assets/Logo Kedai Batatua 1928.png" alt="Kedai Batatua 1928 Logo" class="h-16 w-auto md:h-20 transition-transform duration-300  group-hover:scale-105">
-      </a>
+                     <a href="{{ route('home') }}" class="flex items-center">
+                        <img src="{{ asset('Assets/Logo Kedai Batatua 1928.png') }}" alt="Kedai Batatua 1928 Logo" class="h-16 w-auto md:h-20 transition-transform duration-300 group-hover:scale-105">
+                     </a>
                 </div>
 
-                <!-- Desktop Menu -->
                 <ul class="hidden md:flex items-center space-x-10 text-sm font-semibold tracking-wide">
-                    <li><a href="#home" class="text-gray-800 hover:text-amber-600 transition-all duration-300 relative after:content-[''] after:absolute after:w-0 after:h-1 after:bg-gradient-to-r after:from-amber-500 after:to-yellow-500 after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full">HOME</a></li>
-                    <li><a href="#about" class="text-gray-800 hover:text-amber-600 transition-all duration-300 relative after:content-[''] after:absolute after:w-0 after:h-1 after:bg-gradient-to-r after:from-amber-500 after:to-yellow-500 after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full">ABOUT</a></li>
-                    <li><a href="menu.html" class="text-gray-800 hover:text-amber-600 transition-all duration-300 relative after:content-[''] after:absolute after:w-0 after:h-1 after:bg-gradient-to-r after:from-amber-500 after:to-yellow-500 after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full">MENU</a></li>
-                    <li><a href="contact.html" class="text-gray-800 hover:text-amber-600 transition-all duration-300 relative after:content-[''] after:absolute after:w-0 after:h-1 after:bg-gradient-to-r after:from-amber-500 after:to-yellow-500 after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full">CONTACT</a></li>
+                    <li><a href="{{ route('home') }}#home" class="text-gray-800 hover:text-amber-600 transition-all duration-300 relative after:content-[''] after:absolute after:w-0 after:h-1 after:bg-gradient-to-r after:from-amber-500 after:to-yellow-500 after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full">HOME</a></li>
+                    <li><a href="{{ route('home') }}#about" class="text-gray-800 hover:text-amber-600 transition-all duration-300 relative after:content-[''] after:absolute after:w-0 after:h-1 after:bg-gradient-to-r after:from-amber-500 after:to-yellow-500 after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full">ABOUT</a></li>
+                    <li><a href="{{ route('menu') }}" class="text-gray-800 hover:text-amber-600 transition-all duration-300 relative after:content-[''] after:absolute after:w-0 after:h-1 after:bg-gradient-to-r after:from-amber-500 after:to-yellow-500 after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full">MENU</a></li>
+                    <li><a href="{{ route('contact') }}" class="text-gray-800 hover:text-amber-600 transition-all duration-300 relative after:content-[''] after:absolute after:w-0 after:h-1 after:bg-gradient-to-r after:from-amber-500 after:to-yellow-500 after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full">CONTACT</a></li>
                     <li><a href="#location" class="text-gray-800 hover:text-amber-600 transition-all duration-300 relative after:content-[''] after:absolute after:w-0 after:h-1 after:bg-gradient-to-r after:from-amber-500 after:to-yellow-500 after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full">LOCATION</a></li>
                 </ul>
 
-                <!-- Mobile Menu Button -->
                 <button id="mobile-menu-btn" class="md:hidden focus:outline-none text-gray-800 hover:text-amber-600 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -122,13 +143,12 @@
                 </button>
             </div>
 
-            <!-- Mobile Menu -->
             <div id="mobile-menu" class="hidden md:hidden bg-white/98 backdrop-blur-md border-t border-gray-200 shadow-lg">
                 <ul class="flex flex-col px-6 py-4 text-sm font-semibold tracking-wide space-y-2">
-                    <li><a href="#home" class="block py-3 text-gray-700 hover:text-amber-600 transition-colors duration-300 border-b border-gray-100">HOME</a></li>
-                    <li><a href="#about" class="block py-3 text-gray-700 hover:text-amber-600 transition-colors duration-300 border-b border-gray-100">ABOUT</a></li>
-                    <li><a href="menu.html" class="block py-3 text-gray-700 hover:text-amber-600 transition-colors duration-300 border-b border-gray-100">MENU</a></li>
-                    <li><a href="contact.html" class="block py-3 text-gray-700 hover:text-amber-600 transition-colors duration-300 border-b border-gray-100">CONTACT</a></li>
+                    <li><a href="{{ route('home') }}#home" class="block py-3 text-gray-700 hover:text-amber-600 transition-colors duration-300 border-b border-gray-100">HOME</a></li>
+                    <li><a href="{{ route('home') }}#about" class="block py-3 text-gray-700 hover:text-amber-600 transition-colors duration-300 border-b border-gray-100">ABOUT</a></li>
+                    <li><a href="{{ route('menu') }}" class="block py-3 text-gray-700 hover:text-amber-600 transition-colors duration-300 border-b border-gray-100">MENU</a></li>
+                    <li><a href="{{ route('contact') }}" class="block py-3 text-gray-700 hover:text-amber-600 transition-colors duration-300 border-b border-gray-100">CONTACT</a></li>
                     <li><a href="#location" class="block py-3 text-gray-700 hover:text-amber-600 transition-colors duration-300">LOCATION</a></li>
                 </ul>
             </div>
@@ -138,6 +158,13 @@
     <main>
         {{ $slot }}
     </main>
+    
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="Gallery Image">
+        <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white text-4xl hover:text-amber-400 transition-colors">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
 
     <footer id="location" class="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white py-16">
         <div class="container mx-auto px-4">
@@ -192,6 +219,7 @@
             </div>
         </div>
     </footer>
+    
     @stack('scripts') 
 
 </body>
