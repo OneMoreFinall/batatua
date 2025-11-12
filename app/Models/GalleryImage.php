@@ -11,7 +11,7 @@ class GalleryImage extends Model
 
     protected $fillable =
     [
-        'slot_name',
+        'title',
         'image_path',
     ];
 

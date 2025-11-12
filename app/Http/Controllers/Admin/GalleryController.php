@@ -1,40 +1,81 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-use App\Models\GalleryImage;
+
 use App\Http\Controllers\Controller;
+use App\Models\GalleryImage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class GalleryController extends Controller
 {
     public function index()
     {
-        $galleryImages = GalleryImage::all();
-        return view('admin.gallery.index', ['images' => $galleryImages]);
+        $images = GalleryImage::latest()->get();
+        return view('admin.gallery.index', ['images' => $images]);
     }
 
-        public function update(Request $request, string $id)
+    public function store(Request $request)
     {
         $request->validate([
+            'title' => 'required|string|max:255',
             'gambar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $galleryImage = GalleryImage::findOrFail($id);
-
-        if ($galleryImage->image_path != 'placeholder.jpg' && file_exists(public_path('Assets/' . $galleryImage->image_path))) {
-            unlink(public_path('Assets/' . $galleryImage->image_path));
-        }
-
         $gambar = $request->file('gambar');
-        $namaGambar = 'gallery_' . $id . '_' . time() . '.' . $gambar->extension();
-        $gambar->move(public_path('Assets'), $namaGambar); 
+        $namaGambar = time() . '.' . $gambar->extension();
+        $gambar->move(public_path('Assets'), $namaGambar);
 
-        $galleryImage->update([
+        $image = GalleryImage::create([
+            'title' => $request->input('title'),
             'image_path' => $namaGambar,
         ]);
 
-        return redirect()->route('admin.gallery.index')
-                        ->with('success', $galleryImage->slot_name . ' berhasil diperbarui!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Gambar berhasil ditambahkan!',
+            'image' => $image,
+        ]);
+    }
+
+    public function update(Request $request, GalleryImage $gallery)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $data = $request->only(['title']);
+
+        if ($request->hasFile('gambar')) {
+            if ($gallery->image_path && file_exists(public_path('Assets/' . $gallery->image_path))) {
+                unlink(public_path('Assets/' . $gallery->image_path));
+            }
+            $gambar = $request->file('gambar');
+            $namaGambar = time() . '.' . $gambar->extension();
+            $gambar->move(public_path('Assets'), $namaGambar);
+            $data['image_path'] = $namaGambar;
+        }
+
+        $gallery->update($data);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Gambar berhasil diperbarui!',
+            'image' => $gallery->fresh(),
+        ]);
+    }
+
+    public function destroy(GalleryImage $gallery)
+    {
+        if ($gallery->image_path && file_exists(public_path('Assets/' . $gallery->image_path))) {
+            unlink(public_path('Assets/' . $gallery->image_path));
+        }
+
+        $gallery->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Gambar berhasil dihapus!',
+        ]);
     }
 }

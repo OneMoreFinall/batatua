@@ -40,8 +40,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::resource('menu', AdminMenuController::class);
-Route::get('/gallery', [AdminGalleryController::class, 'index'])->name('gallery.index');
-Route::post('/gallery/update/{id}', [AdminGalleryController::class, 'update'])->name('gallery.update');
+Route::resource('gallery', AdminGalleryController::class)->except(['show']);
 Route::get('/profile', [ProfileController::class, 'adminEdit'])->name('profile.edit');
 Route::resource('notes', AdminNoteController::class);
 });
