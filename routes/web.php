@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MenuController as AdminMenuController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
+use App\Http\Controllers\Admin\AdminNoteController as AdminNoteController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -42,6 +43,7 @@ Route::resource('menu', AdminMenuController::class);
 Route::get('/gallery', [AdminGalleryController::class, 'index'])->name('gallery.index');
 Route::post('/gallery/update/{id}', [AdminGalleryController::class, 'update'])->name('gallery.update');
 Route::get('/profile', [ProfileController::class, 'adminEdit'])->name('profile.edit');
+Route::resource('notes', AdminNoteController::class);
 });
 
 // login routes (admin)

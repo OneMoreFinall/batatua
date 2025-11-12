@@ -11,7 +11,8 @@ export default defineConfig({
                 'resources/js/home.js',
                 'resources/js/contact.js',
                 'resources/js/menuPage.js',
-
+                'resources/js/adminDashboard.js',
+                'resources/js/adminMenu.js',
             ],
             refresh: true,
         }),

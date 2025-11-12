@@ -5,17 +5,31 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Menu;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage; // Pastikan ini ada
+use Illuminate\Support\Facades\Storage;
 
 class MenuController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $query = Menu::query();
+
+        if ($request->has('kategori') && $request->kategori != 'all') {
+            $query->where('kategori', $request->kategori);
+        }
+
+        if ($request->has('search') && $request->search != '') {
+            $query->where('nama', 'like', '%' . $request->search . '%');
+        }
         
-        $menus = Menu::latest()->get(); 
+        $menus = $query->latest()->get();
+        
+        if ($request->wantsJson()) {
+            return response()->json($menus);
+        }
+        
         return view('admin.menu.index', ['menus' => $menus]);
     }
 
@@ -24,11 +38,12 @@ class MenuController extends Controller
      */
     public function create()
     {
-        
-
-        return view('admin.menu.create');
+        //
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -43,17 +58,18 @@ class MenuController extends Controller
         $namaGambar = time() . '.' . $gambar->extension();
         $gambar->move(public_path('Assets'), $namaGambar);
 
-        Menu::create([
-            'nama' => $request->nama,
-            'harga' => $request->harga,
-            'kategori' => $request->kategori,
+        $menu = Menu::create([
+            'nama' => $request->input('nama'),
+            'harga' => $request->input('harga'),
+            'kategori' => $request->input('kategori'),
             'gambar' => $namaGambar,
-            'deskripsi' => $request->deskripsi,
+            'deskripsi' => $request->input('deskripsi'),
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Menu baru berhasil ditambahkan!',
+            'menu' => $menu
         ]);
     }
 
@@ -62,7 +78,7 @@ class MenuController extends Controller
      */
     public function show(Menu $menu)
     {
-        // 
+        //
     }
 
     /**
@@ -70,16 +86,19 @@ class MenuController extends Controller
      */
     public function edit(Menu $menu)
     {
-        return view('admin.menu.edit', ['menu' => $menu]);
+        //
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, Menu $menu)
     {
         $request->validate([
             'nama' => 'required|string|max:255',
             'harga' => 'required|integer|min:0',
             'kategori' => 'required|string',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Boleh kosong
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'deskripsi' => 'nullable|string|max:500',
         ]);
 
@@ -100,6 +119,7 @@ class MenuController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Menu berhasil diperbarui!',
+            'menu' => $menu->fresh()
         ]);
     }
 
