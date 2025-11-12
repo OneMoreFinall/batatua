@@ -94,17 +94,18 @@
                                 class="form-input w-full px-4 py-3 rounded-lg border-2 border-amber-200 focus:border-amber-500 transition-all duration-300"
                             >
                         </div>
+                        
                         <div>
-                            <label for="waktu" class="block text-gray-700 font-semibold mb-2">
-                                <i class="fas fa-clock mr-2 text-amber-600"></i>Waktu Reservasi
+                            <label for="waktuMulai" class="block text-gray-700 font-semibold mb-2">
+                                <i class="fas fa-clock mr-2 text-amber-600"></i>Waktu Mulai
                                 <span class="text-red-500">*</span>
                             </label>
                             <select
-                                id="waktu"
+                                id="waktuMulai"
                                 required
                                 class="form-input w-full px-4 py-3 rounded-lg border-2 border-amber-200 focus:border-amber-500 transition-all duration-300"
                             >
-                                <option value="">Pilih waktu</option>
+                                <option value="">Pilih waktu mulai</option>
                                 <option value="10:00">10:00 WIB</option>
                                 <option value="11:00">11:00 WIB</option>
                                 <option value="12:00">12:00 WIB</option>
@@ -115,8 +116,26 @@
                                 <option value="17:00">17:00 WIB</option>
                                 <option value="18:00">18:00 WIB</option>
                                 <option value="19:00">19:00 WIB</option>
+                                <option value="20:00">20:00 WIB</option>
+                                <option value="21:00">21:00 WIB</option>
+                                <option value="22:00">22:00 WIB</option>
                             </select>
                         </div>
+
+                        <div>
+                            <label for="waktuSelesai" class="block text-gray-700 font-semibold mb-2">
+                                <i class="fas fa-clock mr-2 text-amber-600"></i>Waktu Selesai
+                                <span class="text-red-500">*</span>
+                            </label>
+                            <select
+                                id="waktuSelesai"
+                                required
+                                class="form-input w-full px-4 py-3 rounded-lg border-2 border-amber-200 focus:border-amber-500 transition-all duration-300"
+                            >
+                                <option value="">Pilih waktu mulai dulu</option>
+                            </select>
+                        </div>
+
                         <div>
                             <label for="jumlahTamu" class="block text-gray-700 font-semibold mb-2">
                                 <i class="fas fa-users mr-2 text-amber-600"></i>Jumlah Tamu
@@ -286,6 +305,3 @@
 
 </x-app-layout>
 
-@push('scripts')
-    @vite('resources/js/contact.js')
-@endpush

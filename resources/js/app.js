@@ -1,4 +1,5 @@
 import './bootstrap';
+import './contact'
 
 import Alpine from 'alpinejs';
 
@@ -8,7 +9,6 @@ Alpine.start();
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    // --- Navbar scroll effect ---
     const navbar = document.getElementById('navbar');
     const mobileMenuBtn = document.getElementById('mobile-menu-btn'); 
     
@@ -26,7 +26,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // --- Mobile menu toggle ---
     const mobileMenu = document.getElementById('mobile-menu');
     if (mobileMenuBtn && mobileMenu) {
         mobileMenuBtn.addEventListener('click', function() {
@@ -34,7 +33,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // --- Close mobile menu when clicking on a link ---
     const mobileMenuLinks = document.querySelectorAll('#mobile-menu a');
     if (mobileMenuLinks && mobileMenu) {
         mobileMenuLinks.forEach(link => {
@@ -44,7 +42,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // --- Smooth scrolling for anchor links ---
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             const href = this.getAttribute('href');
@@ -61,7 +58,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // --- Lightbox functionality ---
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     
@@ -80,14 +76,12 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // --- Close lightbox on ESC key ---
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeLightbox();
         }
     });
 
-    // --- Intersection Observer for animations ---
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
@@ -102,7 +96,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }, observerOptions);
 
-    // --- Observe elements for scroll animations ---
     document.querySelectorAll('.product-card, .gallery-item, .animate-fade-in-up').forEach(el => {
         if(el) { 
             el.style.opacity = '0';
@@ -112,14 +105,9 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // --- Card Click/Flip (IMPROVED VERSION) ---
     window.toggleCard = function(card) {
-        // Simply toggle the 'active' class on the clicked card
-        // No auto-closing of other cards
-        // No backdrop or hover interference
         card.classList.toggle('active');
         
-        // Stop event propagation to prevent interference with other elements
         event.stopPropagation();
     }
 
