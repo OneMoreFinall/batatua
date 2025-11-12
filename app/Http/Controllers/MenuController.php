@@ -10,19 +10,24 @@ class MenuController extends Controller
     /**
      * Display a listing of the resource.
      */
-
-  public function index(Request $request)
+    public function index(Request $request)
     {
         $query = Menu::query();
 
         if ($request->has('kategori') && $request->kategori != 'all') {
             $query->where('kategori', $request->kategori);
         }
+
+        if ($request->has('search') && $request->search != '') {
+            $query->where('nama', 'like', '%' . $request->search . '%');
+        }
         
         $menus = $query->get();
+        
         if ($request->wantsJson()) {
             return response()->json($menus);
         }
+        
         return view('menu', ['menus' => $menus]);
     }
 

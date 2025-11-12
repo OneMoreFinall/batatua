@@ -10,18 +10,18 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // --- Navbar scroll effect ---
     const navbar = document.getElementById('navbar');
-    const mobileMenuBtn = document.getElementById('mobile-menu-btn'); // Ambil tombol mobile
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn'); 
     
     if (navbar) {
         window.addEventListener('scroll', function() {
             if (window.scrollY > 50) {
                 navbar.classList.add('bg-white/98', 'backdrop-blur-md', 'shadow-lg', 'scrolled');
                 navbar.classList.remove('bg-transparent');
-                if (mobileMenuBtn) mobileMenuBtn.classList.add('text-gray-800'); // Ganti warna ikon
+                if (mobileMenuBtn) mobileMenuBtn.classList.add('text-gray-800'); 
             } else {
                 navbar.classList.remove('bg-white/98', 'backdrop-blur-md', 'shadow-lg', 'scrolled');
                 navbar.classList.add('bg-transparent');
-                if (mobileMenuBtn) mobileMenuBtn.classList.remove('text-gray-800'); // Kembalikan warna ikon
+                if (mobileMenuBtn) mobileMenuBtn.classList.remove('text-gray-800'); 
             }
         });
     }
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             const href = this.getAttribute('href');
-            if (href.length > 1) { // Pastikan bukan cuma '#'
+            if (href.length > 1) { 
                 e.preventDefault();
                 const target = document.querySelector(href);
                 if (target) {
@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // --- Observe elements for scroll animations ---
     document.querySelectorAll('.product-card, .gallery-item, .animate-fade-in-up').forEach(el => {
-        if(el) { // Cek jika elemen ada
+        if(el) { 
             el.style.opacity = '0';
             el.style.transform = 'translateY(30px)';
             el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
@@ -112,19 +112,15 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // --- Card Click (dari file app.js lama Anda) ---
+    // --- Card Click/Flip (IMPROVED VERSION) ---
     window.toggleCard = function(card) {
-        document.querySelectorAll('.group.active').forEach(c => {
-            if (c !== card) c.classList.remove('active');
-        });
+        // Simply toggle the 'active' class on the clicked card
+        // No auto-closing of other cards
+        // No backdrop or hover interference
         card.classList.toggle('active');
         
-        const anyActive = document.querySelector('.group.active');
-        if (anyActive) {
-            document.body.classList.add('backdrop-blur-sm');
-        } else {
-            document.body.classList.remove('backdrop-blur-sm');
-        }
+        // Stop event propagation to prevent interference with other elements
+        event.stopPropagation();
     }
 
 });
