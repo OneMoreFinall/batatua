@@ -7,6 +7,9 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+
     <link rel="icon" href="{{ asset('Assets/Logo Kedai Batatua 1928.png') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -123,7 +126,7 @@
             <div class="container mx-auto px-6 flex items-center justify-between">
                 <div class="flex items-center -ml-2">
                      <a href="{{ route('home') }}" class="flex items-center">
-                        <img src="{{ asset('Assets/Logo Kedai Batatua 1928.png') }}" alt="Kedai Batatua 1928 Logo" class="h-16 w-auto md:h-20 transition-transform duration-300 group-hover:scale-105">
+                         <img src="{{ asset('Assets/Logo Kedai Batatua 1928.png') }}" alt="Kedai Batatua 1928 Logo" class="h-16 w-auto md:h-20 transition-transform duration-300 group-hover:scale-105">
                      </a>
                 </div>
 
@@ -132,7 +135,7 @@
                     <li><a href="{{ route('home') }}#about" class="text-gray-800 hover:text-amber-600 transition-all duration-300 relative after:content-[''] after:absolute after:w-0 after:h-1 after:bg-gradient-to-r after:from-amber-500 after:to-yellow-500 after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full">ABOUT</a></li>
                     <li><a href="{{ route('menu') }}" class="text-gray-800 hover:text-amber-600 transition-all duration-300 relative after:content-[''] after:absolute after:w-0 after:h-1 after:bg-gradient-to-r after:from-amber-500 after:to-yellow-500 after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full">MENU</a></li>
                     <li><a href="{{ route('contact') }}" class="text-gray-800 hover:text-amber-600 transition-all duration-300 relative after:content-[''] after:absolute after:w-0 after:h-1 after:bg-gradient-to-r after:from-amber-500 after:to-yellow-500 after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full">CONTACT</a></li>
-                    <li><a href="#location" class="text-gray-800 hover:text-amber-600 transition-all duration-300 relative after:content-[''] after:absolute after:w-0 after:h-1 after:bg-gradient-to-r after:from-amber-500 after:to-yellow-500 after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full">LOCATION</a></li>
+                    <li><a href="{{ route('home') }}#location" class="text-gray-800 hover:text-amber-600 transition-all duration-300 relative after:content-[''] after:absolute after:w-0 after:h-1 after:bg-gradient-to-r after:from-amber-500 after:to-yellow-500 after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full">LOCATION</a></li>
                 </ul>
 
                 <button id="mobile-menu-btn" class="md:hidden focus:outline-none text-gray-800 hover:text-amber-600 transition-colors">
@@ -148,7 +151,7 @@
                     <li><a href="{{ route('home') }}#about" class="block py-3 text-gray-700 hover:text-amber-600 transition-colors duration-300 border-b border-gray-100">ABOUT</a></li>
                     <li><a href="{{ route('menu') }}" class="block py-3 text-gray-700 hover:text-amber-600 transition-colors duration-300 border-b border-gray-100">MENU</a></li>
                     <li><a href="{{ route('contact') }}" class="block py-3 text-gray-700 hover:text-amber-600 transition-colors duration-300 border-b border-gray-100">CONTACT</a></li>
-                    <li><a href="#location" class="block py-3 text-gray-700 hover:text-amber-600 transition-colors duration-300">LOCATION</a></li>
+                    <li><a href="{{ route('home') }}#location" class="block py-3 text-gray-700 hover:text-amber-600 transition-colors duration-300">LOCATION</a></li>
                 </ul>
             </div>
         </nav>
@@ -173,15 +176,15 @@
                         <i class="fas fa-map-marker-alt mr-2"></i>Lokasi
                     </h3>
                     <p class="text-gray-300 mb-2 text-lg">
-                      <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3957.3415947101084!2d112.7226184!3d-7.315469800000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7fb004ef3acf7%3A0x4e80d1bd83304316!2sKedai%20Batatua%201928%20Ketintang%20Surabaya!5e0!3m2!1sid!2sid!4v1762177314832!5m2!1sid!2sid"
-                        width="350" height="230" style="border:0;" allowfullscreen=""
-                        loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-                      </iframe>
-                      Jl. Ketintang Madya No. 82, Surabaya
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3957.3415947101084!2d112.7226184!3d-7.315469800000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7fb004ef3acf7%3A0x4e80d1bd83304316!2sKedai%20Batatua%201928%20Ketintang%20Surabaya!5e0!3m2!1sid!2sid!4v1762177314832!5m2!1sid!2sid"
+                            width="350" height="230" style="border:0;" allowfullscreen=""
+                            loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                        Jl. Ketintang Madya No. 82, Surabaya
                     </p>
                      <div>
-        </div>
+                </div>
                 </div>
                 <div class="animate-fade-in-up" style="animation-delay: 0.2s">
                     <h3 class="text-3xl font-bold mb-6 text-amber-400">
@@ -194,7 +197,6 @@
                     </div>
                 </div>
 
-                <!-- Contact -->
                 <div class="animate-fade-in-up" style="animation-delay: 0.4s">
                     <h3 class="text-3xl font-bold mb-6 text-amber-400">
                         <i class="fas fa-phone mr-2"></i>Contact us
@@ -214,7 +216,7 @@
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400">
-                <p>&copy; 2024 Kedai Batatua 1928. All rights reserved.</p>
+                <p>© {{ date('Y') }} Kedai Batatua 1928. All rights reserved.</p>
             </div>
         </div>
     </footer>

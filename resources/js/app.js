@@ -1,5 +1,8 @@
 import './bootstrap';
-import './contact'
+import './contact';
+import './home';
+import './menu';
+
 
 import Alpine from 'alpinejs';
 
@@ -42,12 +45,14 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    document.querySelectorAll('a[href*="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
-            const href = this.getAttribute('href');
-            if (href.length > 1) { 
+            const url = new URL(this.href);
+            const currentUrl = new URL(window.location.href);
+
+            if (url.pathname === currentUrl.pathname && url.search === currentUrl.search && url.hash) {
                 e.preventDefault();
-                const target = document.querySelector(href);
+                const target = document.querySelector(url.hash);
                 if (target) {
                     target.scrollIntoView({
                         behavior: 'smooth',
@@ -57,6 +62,18 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     });
+
+    if (window.location.hash) {
+        setTimeout(() => {
+            const target = document.querySelector(window.location.hash);
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }, 100);
+    }
 
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');

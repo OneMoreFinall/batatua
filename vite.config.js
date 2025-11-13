@@ -10,7 +10,7 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/js/home.js',
                 'resources/js/contact.js',
-                'resources/js/menuPage.js',
+                'resources/js/menu.js',
                 'resources/js/adminDashboard.js',
                 'resources/js/adminMenu.js',
             ],

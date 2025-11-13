@@ -27,8 +27,8 @@
                 <div class="flex-shrink-0 animate-fade-in-up">
                     <img src="{{ asset('Assets/Rectangle 1.png') }}" alt="logo batatua" class="w-80 md:w-96 rounded-2xl shadow-2xl transform hover:scale-105 transition-transform duration-500 border-4 border-amber-200">
                 </div>
-                <div class="max-w-2xl text-center md:text-left animate-fade-in-up" style="animation-delay: 0.2s">
-                    <h2 class="text-4xl md:text-5xl font-bold mb-6 gradient-text">Tentang Kedai Batatua 1928</h2>
+                <div class="max-w-2xl text-center md:text-left animate-fade-in-up overflow-visible" style="animation-delay: 0.2s">
+                    <h2 class="text-4xl md:text-5xl font-bold mb-6 gradient-text leading-snug pb-2">Tentang Kedai Batatua 1928</h2>
                     <p class="text-lg md:text-xl text-gray-700 leading-relaxed mb-4">
                         Kedai Batatua 1928, tempat yang nyaman dengan menu lengkap dan harga terjangkau. Nikmati suasana hangat untuk makan, santai, dan berkumpul bersama teman atau keluarga.
                     </p>
@@ -60,7 +60,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                 
                 @forelse ($featuredMenus as $menu)
-                    <div class="product-card bg-white rounded-3xl shadow-xl overflow-hidden group">
+                    <div class="product-card bg-white rounded-3xl shadow-xl overflow-hidden group cursor-pointer" onclick="window.toggleCard(this)">
                         <div class="aspect-square bg-gray-200 overflow-hidden relative">
                             <img src="{{ asset('Assets/' . $menu->gambar) }}" alt="{{ $menu->nama }}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -72,6 +72,13 @@
                                 <i class="fas fa-star mr-1"></i>
                                 <span class="text-sm font-semibold">Menu Favorit</span>
                             </div>
+                        </div>
+
+                        <div class="absolute inset-0 bg-white/95 p-4 opacity-0 translate-x-5 scale-95 rounded-2xl transition-all duration-500 group-[.active]:opacity-100 group-[.active]:translate-x-0 group-[.active]:scale-100 pointer-events-none">
+                            <h4 class="font-semibold mb-2">Deskripsi</h4>
+                            <p class="text-sm">
+                                {{ $menu->deskripsi ?? 'Deskripsi untuk menu ini belum tersedia.' }}
+                            </p>
                         </div>
                     </div>
                 @empty
@@ -99,14 +106,15 @@
                 class="flex space-x-4 overflow-x-scroll scroll-smooth px-6 py-4 no-scrollbar">
 
                 @foreach ($galleryImages as $image)
-                    <img src="{{ asset('Assets/' . $image->image_path) }}" alt="{{ $image->slot_name }}"
+                    <img src="{{ asset('Assets/' . $image->image_path) }}" alt="{{ $image->title }}"
                          class="gallery-item w-80 h-56 object-cover rounded-xl shadow-lg hover:shadow-2xl flex-shrink-0"
                          onclick="openLightbox('{{ asset('Assets/' . $image->image_path) }}')">
                 @endforeach
                 
                 @foreach ($galleryImages as $image)
-                    <img src="{{ asset('Assets/' . $image->image_path) }}" alt="" aria-hidden="true"
-                         class="gallery-item w-80 h-56 object-cover rounded-xl shadow-lg hover:shadow-2xl flex-shrink-0">
+                    <img src="{{ asset('Assets/' . $image->image_path) }}" alt="{{ $image->title }}" aria-hidden="true"
+                         class="gallery-item w-80 h-56 object-cover rounded-xl shadow-lg hover:shadow-2xl flex-shrink-0"
+                         onclick="openLightbox('{{ asset('Assets/' . $image->image_path) }}')">
                 @endforeach
 
             </div>
@@ -114,7 +122,3 @@
     </section>
 
 </x-app-layout>
-
-@push('scripts')
-    @vite('resources/js/home.js')
-@endpush
