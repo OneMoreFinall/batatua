@@ -16,24 +16,28 @@ class GalleryImageSeeder extends Seeder
         GalleryImage::truncate();
 
         GalleryImage::create([
-            'slot_name' => 'Slot 1',
-            'image_path' => 'placeholder.jpg',
+            'title' => 'Suasana Outdoor',
+            'image_path' => 'placeholder_gallery_1.jpg'
         ]);
+
         GalleryImage::create([
-            'slot_name' => 'Slot 2',
-            'image_path' => 'placeholder.jpg',
+            'title' => 'Interior Kedai',
+            'image_path' => 'placeholder_gallery_2.jpg'
         ]);
+
         GalleryImage::create([
-            'slot_name' => 'Slot 3',
-            'image_path' => 'placeholder.jpg',
+            'title' => 'Spot Foto #1',
+            'image_path' => 'placeholder_gallery_3.jpg'
         ]);
+
         GalleryImage::create([
-            'slot_name' => 'Slot 4',
-            'image_path' => 'placeholder.jpg',
+            'title' => 'Area Bar',
+            'image_path' => 'placeholder_gallery_4.jpg'
         ]);
+
         GalleryImage::create([
-            'slot_name' => 'Slot 5',
-            'image_path' => 'placeholder.jpg',
+            'title' => 'Tampak Depan',
+            'image_path' => 'placeholder_gallery_5.jpg'
         ]);
     }
 }
