@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Menu;
 use Illuminate\Http\Request;
+use App\Models\AdminActivity;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class MenuController extends Controller
@@ -66,6 +68,13 @@ class MenuController extends Controller
             'deskripsi' => $request->input('deskripsi'),
         ]);
 
+        AdminActivity::create([
+            'user_id' => Auth::id(),
+            'action_type' => 'add',
+            'model_type' => 'Menu',
+            'description' => 'Menambahkan menu: ' . $request->input('nama')
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => 'Menu baru berhasil ditambahkan!',
@@ -116,6 +125,13 @@ class MenuController extends Controller
 
         $menu->update($data);
 
+        AdminActivity::create([
+            'user_id' => Auth::id(),
+            'action_type' => 'edit',
+            'model_type' => 'Menu',
+            'description' => 'Memperbarui menu: ' . $menu->nama
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => 'Menu berhasil diperbarui!',
@@ -134,9 +150,18 @@ class MenuController extends Controller
             unlink(public_path('Assets/' . $menu->gambar));
         }
 
+        AdminActivity::create([
+            'user_id' => Auth::id(),
+            'action_type' => 'delete',
+            'model_type' => 'Menu',
+            'description' => 'Menghapus menu: ' . $menu->nama
+        ]);
+
         $menu->delete();
 
-        return redirect()->route('admin.menu.index')
-                         ->with('success', 'Menu berhasil dihapus!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Menu berhasil dihapus!',
+        ]);
     }
 }

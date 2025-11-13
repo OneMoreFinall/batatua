@@ -8,7 +8,7 @@
 
     <div class="bg-gradient-to-r from-amber-100 to-yellow-100 p-6 rounded-2xl mb-8 flex items-center justify-between shadow-xl animate-fade-in">
         <div>
-            <h1 class="text-4xl font-bold text-gray-900 mb-2">BATATUA 1928 - ADMIN PANEL</h1>
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">Dashboard</h1>
             <p class="text-gray-700">Selamat datang kembali, {{ auth()->user()->name }}!</p>
         </div>
         <div class="flex items-center space-x-4 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg">
@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-xl animate-fade-in">
             <div class="flex items-center justify-between">
                 <div>
@@ -53,38 +53,6 @@
                 <span>{{ $totalGaleri }} foto</span>
             </div>
         </div>
-
-        <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white shadow-xl animate-fade-in" style="animation-delay: 0.2s">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-purple-100 text-sm mb-1">Pengunjung</p>
-                    <p class="text-4xl font-bold">1.2K</p>
-                </div>
-                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
-                    <i class="fas fa-users text-3xl"></i>
-                </div>
-            </div>
-            <div class="mt-4 flex items-center text-sm">
-                <i class="fas fa-arrow-up mr-2"></i>
-                <span>+15% hari ini</span>
-            </div>
-        </div>
-
-        <div class="stat-card bg-gradient-to-br from-amber-500 to-yellow-500 rounded-2xl p-6 text-white shadow-xl animate-fade-in" style="animation-delay: 0.3s">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-amber-100 text-sm mb-1">Pendapatan</p>
-                    <p class="text-4xl font-bold">Rp 12 jt</p>
-                </div>
-                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
-                    <i class="fas fa-dollar-sign text-3xl"></i>
-                </div>
-            </div>
-            <div class="mt-4 flex items-center text-sm">
-                <i class="fas fa-arrow-up mr-2"></i>
-                <span>+8% bulan ini</span>
-            </div>
-        </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
@@ -107,43 +75,35 @@
             </div>
         </div>
 
+        
         <div class="bg-gradient-to-br from-[#e5c98f] to-[#d4b87a] rounded-3xl p-8 shadow-2xl animate-fade-in" style="animation-delay: 0.2s">
             <h2 class="text-3xl font-bold mb-6 text-gray-900 flex items-center">
                 <i class="fas fa-history mr-3 text-amber-800"></i>Aktivitas Kedai
             </h2>
             <div class="space-y-4 max-h-96 overflow-y-auto">
-                <div class="activity-item flex items-center gap-4 p-4 bg-white/20 backdrop-blur-sm rounded-xl cursor-pointer">
-                    <div class="w-3 h-3 bg-green-500 rounded-full flex-shrink-0 animate-pulse"></div>
-                    <div class="flex-1">
-                        <p class="text-lg font-semibold text-gray-900">Admin menambahkan menu baru</p>
-                        <p class="text-sm text-gray-700">Menu "Es Cokelat Jadoel" ditambahkan</p>
-                        <span class="text-xs text-gray-600">2 jam lalu</span>
+
+                @forelse ($activities as $activity)
+                    <div class="activity-item flex items-center gap-4 p-4 bg-white/20 backdrop-blur-sm rounded-xl cursor-pointer">
+
+                        @if ($activity->action_type == 'add')
+                            <div class="w-3 h-3 bg-green-500 rounded-full flex-shrink-0 animate-pulse"></div>
+                        @elseif ($activity->action_type == 'edit')
+                            <div class="w-3 h-3 bg-blue-500 rounded-full flex-shrink-0"></div>
+                        @else
+                            <div class="w-3 h-3 bg-red-500 rounded-full flex-shrink-0"></div>
+                        @endif
+
+                        <div class="flex-1">
+                            <p class="text-lg font-semibold text-gray-900">{{ $activity->description }}</p>
+                            <span class="text-xs text-gray-600">{{ $activity->created_at->diffForHumans() }}</span>
+                        </div>
                     </div>
-                </div>
-                <div class="activity-item flex items-center gap-4 p-4 bg-white/20 backdrop-blur-sm rounded-xl cursor-pointer">
-                    <div class="w-3 h-3 bg-blue-500 rounded-full flex-shrink-0"></div>
-                    <div class="flex-1">
-                        <p class="text-lg font-semibold text-gray-900">Admin memperbarui profil kedai</p>
-                        <p class="text-sm text-gray-700">Informasi jam operasional diperbarui</p>
-                        <span class="text-xs text-gray-600">3 jam lalu</span>
+                @empty
+                    <div class="text-center text-gray-700 py-4">
+                        <p>Belum ada aktivitas.</p>
                     </div>
-                </div>
-                <div class="activity-item flex items-center gap-4 p-4 bg-white/20 backdrop-blur-sm rounded-xl cursor-pointer">
-                    <div class="w-3 h-3 bg-amber-500 rounded-full flex-shrink-0"></div>
-                    <div class="flex-1">
-                        <p class="text-lg font-semibold text-gray-900">Admin menghapus foto galeri</p>
-                        <p class="text-sm text-gray-700">Foto lama dihapus dari galeri</p>
-                        <span class="text-xs text-gray-600">10 jam lalu</span>
-                    </div>
-                </div>
-                <div class="activity-item flex items-center gap-4 p-4 bg-white/20 backdrop-blur-sm rounded-xl cursor-pointer">
-                    <div class="w-3 h-3 bg-purple-500 rounded-full flex-shrink-0"></div>
-                    <div class="flex-1">
-                        <p class="text-lg font-semibold text-gray-900">Menu populer hari ini</p>
-                        <p class="text-sm text-gray-700">Mie Bangladesh menjadi menu terlaris</p>
-                        <span class="text-xs text-gray-600">1 hari lalu</span>
-                    </div>
-                </div>
+                @endforelse
+
             </div>
         </div>
     </div>

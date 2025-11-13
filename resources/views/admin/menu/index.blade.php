@@ -120,36 +120,6 @@
         </div>
 
         <div id="menuGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach ($menus as $menu)
-                <div class="menu-card bg-white rounded-2xl shadow-xl overflow-hidden animate-fade-in" 
-                     data-id="{{ $menu->id }}" 
-                     data-name="{{ strtolower($menu->nama) }}" 
-                     data-category="{{ $menu->kategori }}">
-                    
-                    <img src="{{ asset('Assets/' . $menu->gambar) }}" alt="{{ $menu->nama }}" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-3">
-                            <h3 class="text-xl font-bold text-gray-800">{{ $menu->nama }}</h3>
-                            <span class="category-badge bg-orange-500 text-white">{{ $menu->kategori }}</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-2xl font-bold text-amber-700">Rp {{ number_format($menu->harga, 0, ',', '.') }}</span>
-                            <div class="flex space-x-2">
-                                <button data-menu='@json($menu)' class="edit-menu-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 transform hover:scale-105">
-                                    <i class="fas fa-edit mr-1"></i>Edit
-                                </button>
-                                <form action="{{ route('admin.menu.destroy', $menu->id) }}" method="POST" class="delete-form">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 transform hover:scale-105">
-                                        <i class="fas fa-trash mr-1"></i>Hapus
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
         </div>
     </div>
 
@@ -319,8 +289,12 @@ document.addEventListener("DOMContentLoaded", function() {
         
         card.querySelector('.delete-form').addEventListener('submit', function(e) {
             e.preventDefault();
+            const form = this;
+            const cardElement = form.closest('.menu-card');
+            const menuId = cardElement.dataset.id;
+            
             window.showConfirmModal('Apakah Anda yakin ingin menghapus menu ini?', () => {
-                this.submit();
+                deleteMenu(form, cardElement, menuId);
             });
         });
 
@@ -389,6 +363,34 @@ document.addEventListener("DOMContentLoaded", function() {
     function closeModal() {
         modal.classList.remove('active');
         menuForm.reset();
+    }
+
+    async function deleteMenu(form, cardElement, menuId) {
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                },
+                body: new FormData(form) 
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Gagal menghapus menu');
+            }
+            
+            window.showToast(result.message, 'error');
+            
+            allMenus = allMenus.filter(m => m.id != menuId);
+            renderMenus();
+
+        } catch (error) {
+            console.error('Delete Error:', error);
+            window.showToast(error.message, 'error');
+        }
     }
 
     document.getElementById('add-menu-btn').addEventListener('click', openAddModal);
@@ -502,8 +504,11 @@ document.addEventListener("DOMContentLoaded", function() {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             
+            const cardElement = form.closest('.menu-card');
+            const menuId = cardElement.dataset.id;
+
             window.showConfirmModal('Apakah Anda yakin ingin menghapus menu ini?', () => {
-                form.submit();
+                deleteMenu(form, cardElement, menuId);
             });
         });
     });
