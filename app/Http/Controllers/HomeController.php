@@ -12,7 +12,27 @@ class HomeController extends Controller
     {
         $galleryImages = GalleryImage::all()->take(5);
 
-        $featuredMenus = Menu::inRandomOrder()->take(3)->get();
+        $limit = 3;
+
+        $labeledMenus = Menu::whereNotNull('label')
+                            ->inRandomOrder()
+                            ->take($limit)
+                            ->get();
+
+        $labeledCount = $labeledMenus->count();
+        $featuredMenus = $labeledMenus;
+
+        if ($labeledCount < $limit) {
+            $needed = $limit - $labeledCount;
+            
+            $unlabeledMenus = Menu::whereNull('label')
+                                ->whereNotIn('id', $labeledMenus->pluck('id'))
+                                ->inRandomOrder()
+                                ->take($needed)
+                                ->get();
+                                
+            $featuredMenus = $labeledMenus->merge($unlabeledMenus);
+        }
 
         return view('home', [
             'galleryImages' => $galleryImages,

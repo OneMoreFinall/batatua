@@ -58,6 +58,17 @@
             font-size: 12px;
             font-weight: bold;
         }
+        .label-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 20px;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
     </style>
 
     <div class="flex-1"
@@ -69,9 +80,11 @@
     >
 
         @if (session('success'))
-            <div class="bg-green-500 text-white text-center p-4 rounded-lg mb-6">
-                {{ session('success') }}
-            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    window.showToast("{{ session('success') }}", 'error');
+                });
+            </script>
         @endif
         
         <div id="error-container" class="bg-red-500 text-white p-4 rounded-lg mb-6 hidden">
@@ -160,6 +173,18 @@
                             <option value="non-coffe">Non Coffee</option>
                         </select>
                     </div>
+                    
+                    <div class="md:col-span-2">
+                        <label for="menuLabel" class="block text-gray-700 font-bold mb-2">
+                            <i class="fas fa-star mr-2 text-amber-600"></i>Label Menu (Opsional)
+                        </label>
+                        <select id="menuLabel" name="label" class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-300 transition-all">
+                            <option value="">Tanpa Label</option>
+                            <option value="hot">Hot</option>
+                            <option value="best_seller">Best Seller</option>
+                        </select>
+                    </div>
+
                     <div class="md:col-span-2">
                         <label for="menuDeskripsi" class="block text-gray-700 font-bold mb-2">
                             <i class="fas fa-align-left mr-2 text-amber-600"></i>Deskripsi
@@ -208,6 +233,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const menuName = document.getElementById('menuName');
     const menuPrice = document.getElementById('menuPrice');
     const menuCategory = document.getElementById('menuCategory');
+    const menuLabel = document.getElementById('menuLabel');
     const menuDeskripsi = document.getElementById('menuDeskripsi');
     const menuImage = document.getElementById('menuImage');
     const imagePreview = document.getElementById('imagePreview');
@@ -249,7 +275,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
     function createMenuCard(menu) {
         const card = document.createElement('div');
-        card.className = 'menu-card bg-white rounded-2xl shadow-xl overflow-hidden animate-fade-in';
+        card.className = 'menu-card bg-white rounded-2xl shadow-xl overflow-hidden animate-fade-in relative';
         card.dataset.id = menu.id;
         card.dataset.name = menu.nama.toLowerCase();
         card.dataset.category = menu.kategori;
@@ -259,7 +285,15 @@ document.addEventListener("DOMContentLoaded", function() {
             `<img src="${assetBase}/${menu.gambar}" alt="${menu.nama}" class="w-full h-48 object-cover">` : 
             `<div class="w-full h-48 bg-gradient-to-br from-amber-200 to-yellow-200 flex items-center justify-center"><i class="fas fa-image text-6xl text-amber-400"></i></div>`;
 
+        let labelHtml = '';
+        if (menu.label === 'hot') {
+            labelHtml = `<div class="label-badge bg-red-600"><i class="fas fa-fire mr-1"></i>Hot</div>`;
+        } else if (menu.label === 'best_seller') {
+            labelHtml = `<div class="label-badge bg-amber-600"><i class="fas fa-star mr-1"></i>Best Seller</div>`;
+        }
+
         card.innerHTML = imageHtml + `
+            ${labelHtml}
             <div class="p-6">
                 <div class="flex justify-between items-start mb-3">
                     <h3 class="text-xl font-bold text-gray-800">${menu.nama}</h3>
@@ -346,6 +380,7 @@ document.addEventListener("DOMContentLoaded", function() {
         menuName.value = menu.nama;
         menuPrice.value = menu.harga;
         menuCategory.value = menu.kategori;
+        menuLabel.value = menu.label || '';
         menuDeskripsi.value = menu.deskripsi || '';
         
         if (menu.gambar) {

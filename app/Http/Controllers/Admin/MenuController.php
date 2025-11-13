@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Menu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Models\AdminActivity;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class MenuController extends Controller
 {
@@ -54,6 +54,7 @@ class MenuController extends Controller
             'kategori' => 'required|string',
             'gambar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'deskripsi' => 'nullable|string|max:500',
+            'label' => 'nullable|string|in:hot,best_seller',
         ]);
 
         $gambar = $request->file('gambar');
@@ -66,6 +67,7 @@ class MenuController extends Controller
             'kategori' => $request->input('kategori'),
             'gambar' => $namaGambar,
             'deskripsi' => $request->input('deskripsi'),
+            'label' => $request->input('label'),
         ]);
 
         AdminActivity::create([
@@ -109,9 +111,10 @@ class MenuController extends Controller
             'kategori' => 'required|string',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'deskripsi' => 'nullable|string|max:500',
+            'label' => 'nullable|string|in:hot,best_seller',
         ]);
 
-        $data = $request->only(['nama', 'harga', 'kategori', 'deskripsi']);
+        $data = $request->only(['nama', 'harga', 'kategori', 'deskripsi', 'label']);
 
         if ($request->hasFile('gambar')) {
             if ($menu->gambar && file_exists(public_path('Assets/' . $menu->gambar))) {
@@ -146,10 +149,6 @@ class MenuController extends Controller
     {
         $menu = Menu::findOrFail($id);
 
-        if ($menu->gambar && file_exists(public_path('Assets/' . $menu->gambar))) {
-            unlink(public_path('Assets/' . $menu->gambar));
-        }
-
         AdminActivity::create([
             'user_id' => Auth::id(),
             'action_type' => 'delete',
@@ -157,11 +156,13 @@ class MenuController extends Controller
             'description' => 'Menghapus menu: ' . $menu->nama
         ]);
 
+        if ($menu->gambar && file_exists(public_path('Assets/' . $menu->gambar))) {
+            unlink(public_path('Assets/' . $menu->gambar));
+        }
+
         $menu->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Menu berhasil dihapus!',
-        ]);
+        return redirect()->route('admin.menu.index')
+                         ->with('success', 'Menu berhasil dihapus!');
     }
 }

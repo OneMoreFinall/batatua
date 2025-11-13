@@ -20,5 +20,6 @@ class Menu extends Model
         'kategori',
         'gambar',
         'deskripsi',
+        'label',
     ];
 }

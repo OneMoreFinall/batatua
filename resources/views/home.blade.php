@@ -60,18 +60,21 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                 
                 @forelse ($featuredMenus as $menu)
-                    <div class="product-card bg-white rounded-3xl shadow-xl overflow-hidden group cursor-pointer" onclick="window.toggleCard(this)">
+                    <div class="product-card bg-white rounded-3xl shadow-xl overflow-hidden group cursor-pointer" onclick="window.toggleCard(this, event)">
                         <div class="aspect-square bg-gray-200 overflow-hidden relative">
                             <img src="{{ asset('Assets/' . $menu->gambar) }}" alt="{{ $menu->nama }}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            
+                            @if ($menu->label == 'hot')
+                                <div class="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg"><i class="fas fa-fire mr-1"></i>Hot</div>
+                            @elseif ($menu->label == 'best_seller')
+                                <div class="absolute top-4 right-4 bg-amber-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg"><i class="fas fa-star mr-1"></i>Best Seller</div>
+                            @endif
+                            
                         </div>
                         <div class="p-6">
                             <h3 class="text-2xl font-bold mb-2 text-gray-800 group-hover:text-amber-600 transition-colors">{{ $menu->nama }}</h3>
                             <p class="text-2xl font-bold text-amber-700">Rp {{ number_format($menu->harga, 0, ',', '.') }}</p>
-                            <div class="mt-4 flex items-center text-amber-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <i class="fas fa-star mr-1"></i>
-                                <span class="text-sm font-semibold">Menu Favorit</span>
-                            </div>
                         </div>
 
                         <div class="absolute inset-0 bg-white/95 p-4 opacity-0 translate-x-5 scale-95 rounded-2xl transition-all duration-500 group-[.active]:opacity-100 group-[.active]:translate-x-0 group-[.active]:scale-100 pointer-events-none">
@@ -122,3 +125,7 @@
     </section>
 
 </x-app-layout>
+
+@push('scripts')
+    @vite('resources/js/home.js')
+@endpush

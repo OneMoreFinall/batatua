@@ -54,7 +54,9 @@ document.addEventListener("DOMContentLoaded", function() {
         card.dataset.category = menu.kategori;
         card.dataset.name = menu.nama.toLowerCase();
         
-        card.setAttribute('onclick', 'window.toggleCard(this)'); 
+        card.addEventListener('click', function(event) {
+            window.toggleCard(this, event);
+        });
 
         const formattedPrice = new Intl.NumberFormat('id-ID', {
             style: 'currency',
@@ -62,14 +64,17 @@ document.addEventListener("DOMContentLoaded", function() {
             minimumFractionDigits: 0
         }).format(menu.harga).replace('Rp', 'Rp ');
         
+        let labelHtml = '';
+        if (menu.label === 'hot') {
+            labelHtml = `<div class="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg"><i class="fas fa-fire mr-1"></i>Hot</div>`;
+        } else if (menu.label === 'best_seller') {
+            labelHtml = `<div class="absolute top-4 right-4 bg-amber-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg"><i class="fas fa-star mr-1"></i>Best Seller</div>`;
+        }
+        
         card.innerHTML = `
             <div class="relative overflow-hidden">
                 <img src="/Assets/${menu.gambar}" alt="${menu.nama}" class="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-500">
-                
-                ${menu.nama.toLowerCase().includes('mie bangladesh') ? '<div class="absolute top-4 right-4 bg-amber-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg"><i class="fas fa-fire mr-1"></i>Hot</div>' : ''}
-                ${menu.nama.toLowerCase().includes('sego ayam') ? '<div class="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg"><i class="fas fa-heart mr-1"></i>Favorite</div>' : ''}
-                ${menu.nama.toLowerCase().includes('americano') ? '<div class="absolute top-4 right-4 bg-amber-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg"><i class="fas fa-coffee mr-1"></i>Best Seller</div>' : ''}
-
+                ${labelHtml}
             </div>
             <div class="p-5">
                 <h3 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-white transition-colors">${menu.nama}</h3>
