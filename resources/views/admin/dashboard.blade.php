@@ -58,33 +58,22 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <div class="bg-gradient-to-br from-[#e5c98f] to-[#d4b87a] rounded-3xl p-8 shadow-2xl animate-fade-in">
             <h2 class="text-3xl font-bold mb-6 text-gray-900 flex items-center">
-                <i class="fas fa-chart-line mr-3 text-amber-800"></i>Statistik Kedai
+                <i class="fas fa-chart-bar mr-3 text-amber-800"></i>Aktivitas 7 Hari Terakhir
             </h2>
-            <div class="flex items-center gap-8">
-                <div class="w-32 h-32 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg">
-                    <i class="fas fa-utensils text-5xl text-amber-900"></i>
-                </div>
-                <div>
-                    <div class="text-6xl font-bold text-gray-900 mb-2">{{ $totalMenu }}</div>
-                    <div class="text-2xl font-semibold text-gray-800 mb-1">Menu</div>
-                    <div class="text-sm text-gray-700">Menu siap disajikan</div>
-                </div>
-            </div>
             <div class="mt-6 pt-6 border-t border-amber-800/30">
-                <canvas id="menuChart" width="400" height="200"></canvas>
+                <canvas id="activityChart" width="400" height="300"></canvas>
             </div>
         </div>
 
-        
         <div class="bg-gradient-to-br from-[#e5c98f] to-[#d4b87a] rounded-3xl p-8 shadow-2xl animate-fade-in" style="animation-delay: 0.2s">
             <h2 class="text-3xl font-bold mb-6 text-gray-900 flex items-center">
                 <i class="fas fa-history mr-3 text-amber-800"></i>Aktivitas Kedai
             </h2>
             <div class="space-y-4 max-h-96 overflow-y-auto">
-
+                
                 @forelse ($activities as $activity)
                     <div class="activity-item flex items-center gap-4 p-4 bg-white/20 backdrop-blur-sm rounded-xl cursor-pointer">
-
+                        
                         @if ($activity->action_type == 'add')
                             <div class="w-3 h-3 bg-green-500 rounded-full flex-shrink-0 animate-pulse"></div>
                         @elseif ($activity->action_type == 'edit')
@@ -92,7 +81,7 @@
                         @else
                             <div class="w-3 h-3 bg-red-500 rounded-full flex-shrink-0"></div>
                         @endif
-
+                        
                         <div class="flex-1">
                             <p class="text-lg font-semibold text-gray-900">{{ $activity->description }}</p>
                             <span class="text-xs text-gray-600">{{ $activity->created_at->diffForHumans() }}</span>
@@ -169,6 +158,51 @@
     </div>
 
     @push('scripts')
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const ctx = document.getElementById('activityChart');
+                if (ctx) {
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: @json($activityLabels),
+                            datasets: [{
+                                label: 'Total Aktivitas',
+                                data: @json($activityData),
+                                backgroundColor: 'rgba(146, 64, 14, 0.6)',
+                                borderColor: 'rgb(146, 64, 14)',
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1
+                                    },
+                                    grid: {
+                                        color: 'rgba(146, 64, 14, 0.1)'
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        color: 'rgba(146, 64, 14, 0.1)'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        </script>
         @vite('resources/js/adminDashboard.js')
     @endpush
     

@@ -11,19 +11,19 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    public function adminEdit(Request $request): View
+    {
+        return view('admin.profile.edit', [
+            'user' => $request->user(),
+        ]);
+    }
+
     /**
      * Display the user's profile form.
      */
     public function edit(Request $request): View
     {
         return view('profile.edit', [
-            'user' => $request->user(),
-        ]);
-    }
-
-    public function adminEdit(Request $request)
-    {
-        return view('admin.profile.edit', [
             'user' => $request->user(),
         ]);
     }
