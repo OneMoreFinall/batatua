@@ -79,10 +79,6 @@ document.addEventListener("DOMContentLoaded", function() {
             <div class="p-5">
                 <h3 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-white transition-colors">${menu.nama}</h3>
                 <p class="text-2xl font-bold text-amber-900 group-hover:text-white transition-colors">${formattedPrice}</p>
-                <div class="mt-3 flex items-center text-amber-900 opacity-0 group-hover:opacity-100 transition-opacity">
-                     <i class="fas fa-star text-yellow-300 mr-1"></i>
-                     <span class="text-sm font-semibold">4.8 Rating</span>
-                </div>
             </div>
 
             <div class="absolute inset-0 bg-white/95 p-4 opacity-0 translate-x-5 scale-95 rounded-2xl transition-all duration-500 group-[.active]:opacity-100 group-[.active]:translate-x-0 group-[.active]:scale-100 pointer-events-none">

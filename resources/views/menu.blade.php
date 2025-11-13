@@ -49,9 +49,9 @@
         }
     </style>
 
-    <section id="home" class="relative h-64 md:h-80 flex items-center justify-center bg-cover bg-center mt-16" style="background-image: url('{{ asset('Assets/Hero Image (2).png') }}');">
+    <section id="home" class="relative h-screen flex items-center justify-center parallax" style="background-image: url('{{ asset('Assets/Hero Image (2).png') }}');">
         <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/50"></div>
-        <div class="relative z-10 text-center text-white px-4">
+        <div class="relative z-10 text-center text-white px-4 animate-fade-in-up">
             <h1 class="text-4xl md:text-6xl font-bold mb-2">
                 <span class="bg-gradient-to-r from-amber-300 via-yellow-300 to-amber-400 bg-clip-text text-transparent">Menu</span> <span class="text-white">Kami</span>
             </h1>
