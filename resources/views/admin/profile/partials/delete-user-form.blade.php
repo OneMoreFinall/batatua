@@ -9,6 +9,7 @@
         </p>
     </header>
 
+    {{-- Tombol Trigger --}}
     <button
         x-data=""
         x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
@@ -17,6 +18,7 @@
         <i class="fas fa-trash-alt mr-2"></i>Hapus Akun
     </button>
 
+    {{-- KEMBALI KE CODINGAN STANDARD (Tanpa Template Teleport Disini) --}}
     <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
         <form method="post" action="{{ route('profile.destroy') }}" class="p-6">
             @csrf

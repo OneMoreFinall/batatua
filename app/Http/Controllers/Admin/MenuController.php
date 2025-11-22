@@ -11,41 +11,32 @@ use Illuminate\Support\Facades\Auth;
 
 class MenuController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
+        // Logika filter server-side
         $query = Menu::query();
 
         if ($request->has('kategori') && $request->kategori != 'all') {
             $query->where('kategori', $request->kategori);
         }
 
-        if ($request->has('search') && $request->search != '') {
+        if ($request->has('search') && $request->filled('search')) {
             $query->where('nama', 'like', '%' . $request->search . '%');
         }
         
         $menus = $query->latest()->get();
         
+        // Jika request datang dari AJAX (JavaScript), kirim JSON
         if ($request->wantsJson()) {
-            return response()->json($menus);
+            return response()->json([
+                'menus' => $menus
+            ]);
         }
         
+        // Jika request biasa (buka halaman pertama kali), kirim View
         return view('admin.menu.index', ['menus' => $menus]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -84,25 +75,6 @@ class MenuController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Menu $menu)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Menu $menu)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Menu $menu)
     {
         $request->validate([
@@ -142,9 +114,6 @@ class MenuController extends Controller
         ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $menu = Menu::findOrFail($id);
@@ -161,6 +130,13 @@ class MenuController extends Controller
         }
 
         $menu->delete();
+
+        if (request()->wantsJson()) {
+             return response()->json([
+                'success' => true,
+                'message' => 'Menu berhasil dihapus!'
+            ]);
+        }
 
         return redirect()->route('admin.menu.index')
                          ->with('success', 'Menu berhasil dihapus!');

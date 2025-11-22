@@ -1,76 +1,24 @@
 <x-layouts.admin>
     <x-slot name="title">Kelola Menu</x-slot>
 
+    {{-- Style CSS tetap sama --}}
     <style>
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-            animation: fadeIn 0.5s ease-out;
-        }
-        .menu-card {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .menu-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
-            z-index: 1000;
-        }
-        .modal.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow-y: auto;
-            padding: 20px;
-            animation: fadeIn 0.3s ease;
-        }
-        .modal-content {
-            max-height: 90vh;
-            overflow-y: auto;
-            margin: auto;
-            animation: slideIn 0.3s ease;
-        }
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .image-preview {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        .category-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        .label-badge {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            font-size: 12px;
-            font-weight: bold;
-            padding: 4px 10px;
-            border-radius: 20px;
-            color: white;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out; }
+        .menu-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .menu-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1000; }
+        .modal.active { display: flex; align-items: center; justify-content: center; overflow-y: auto; padding: 20px; animation: fadeIn 0.3s ease; }
+        .modal-content { max-height: 90vh; overflow-y: auto; margin: auto; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #d97706; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+        .image-preview { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
+        .category-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .label-badge { position: absolute; top: 1rem; right: 1rem; font-size: 12px; font-weight: bold; padding: 4px 10px; border-radius: 20px; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
     </style>
 
+    {{-- HTML Body tetap sama --}}
     <div class="flex-1"
         id="menu-management-container"
         data-store-url="{{ route('admin.menu.store') }}"
@@ -78,11 +26,11 @@
         data-asset-base="{{ asset('Assets') }}"
         data-csrf-token="{{ csrf_token() }}"
     >
-
         @if (session('success'))
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
-                    window.showToast("{{ session('success') }}", 'error');
+                    // Default flash message blade (biasanya delete dr controller redirect)
+                    window.showToast("{{ session('success') }}", 'error'); 
                 });
             </script>
         @endif
@@ -105,12 +53,7 @@
         <div class="mb-8 bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg animate-fade-in">
             <div class="flex flex-col md:flex-row gap-4">
                 <div class="flex-1 relative">
-                    <input
-                        type="text"
-                        id="searchInput"
-                        placeholder="Cari menu..."
-                        class="w-full px-6 py-3 pl-12 rounded-xl border-2 border-amber-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-300 transition-all"
-                    >
+                    <input type="text" id="searchInput" placeholder="Cari menu..." class="w-full px-6 py-3 pl-12 rounded-xl border-2 border-amber-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-300 transition-all">
                     <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-amber-500"></i>
                 </div>
                 <select id="categoryFilter" class="px-6 py-3 rounded-xl border-2 border-amber-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-300 transition-all">
@@ -123,26 +66,28 @@
             </div>
         </div>
 
+        <div id="loadingState" class="hidden text-center py-8">
+            <div class="loader"></div>
+            <p class="text-gray-500 font-semibold">Memuat menu...</p>
+        </div>
+
         <div id="emptyState" class="text-center py-16 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg hidden">
             <i class="fas fa-utensils text-6xl text-gray-300 mb-4"></i>
             <h3 class="text-2xl font-bold text-gray-600 mb-2">Belum ada menu</h3>
-            <p class="text-gray-500 mb-6">Klik tombol "Tambah Menu" untuk menambahkan menu baru</p>
+            <p class="text-gray-500 mb-6">Tidak ditemukan menu untuk pencarian/kategori ini.</p>
             <button id="add-menu-btn-empty" class="bg-gradient-to-r from-amber-600 to-yellow-600 text-white px-8 py-3 rounded-xl font-bold hover:from-amber-700 hover:to-yellow-700 transition-all">
-                <i class="fas fa-plus mr-2"></i>Tambah Menu Pertama
+                <i class="fas fa-plus mr-2"></i>Tambah Menu
             </button>
         </div>
 
-        <div id="menuGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        </div>
+        <div id="menuGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </div>
 
     <div id="menuModal" class="modal" onclick="if(event.target === this) closeModal()">
         <div class="bg-white rounded-3xl p-8 max-w-2xl w-full mx-4 modal-content shadow-2xl">
             <div class="flex justify-between items-center mb-6">
                 <h2 id="modalTitle" class="text-3xl font-bold text-gray-900">Tambah Menu Baru</h2>
-                <button id="close-modal-btn" class="text-gray-400 hover:text-gray-600 text-2xl">
-                    <i class="fas fa-times"></i>
-                </button>
+                <button id="close-modal-btn" class="text-gray-400 hover:text-gray-600 text-2xl"><i class="fas fa-times"></i></button>
             </div>
             <form id="menuForm">
                 <input type="hidden" id="formMethod" name="_method" value="POST">
@@ -150,21 +95,15 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="md:col-span-2">
-                        <label for="menuName" class="block text-gray-700 font-bold mb-2">
-                            <i class="fas fa-utensils mr-2 text-amber-600"></i>Nama Menu
-                        </label>
+                        <label for="menuName" class="block text-gray-700 font-bold mb-2"><i class="fas fa-utensils mr-2 text-amber-600"></i>Nama Menu</label>
                         <input type="text" id="menuName" name="nama" class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-300 transition-all" required>
                     </div>
                     <div>
-                        <label for="menuPrice" class="block text-gray-700 font-bold mb-2">
-                            <i class="fas fa-tag mr-2 text-amber-600"></i>Harga (Rp)
-                        </label>
+                        <label for="menuPrice" class="block text-gray-700 font-bold mb-2"><i class="fas fa-tag mr-2 text-amber-600"></i>Harga (Rp)</label>
                         <input type="number" id="menuPrice" name="harga" class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-300 transition-all" required min="0">
                     </div>
                     <div>
-                        <label for="menuCategory" class="block text-gray-700 font-bold mb-2">
-                            <i class="fas fa-list mr-2 text-amber-600"></i>Kategori
-                        </label>
+                        <label for="menuCategory" class="block text-gray-700 font-bold mb-2"><i class="fas fa-list mr-2 text-amber-600"></i>Kategori</label>
                         <select id="menuCategory" name="kategori" class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-300 transition-all" required>
                             <option value="">Pilih Kategori</option>
                             <option value="makanan-berat">Makanan Berat</option>
@@ -173,28 +112,20 @@
                             <option value="non-coffe">Non Coffee</option>
                         </select>
                     </div>
-                    
                     <div class="md:col-span-2">
-                        <label for="menuLabel" class="block text-gray-700 font-bold mb-2">
-                            <i class="fas fa-star mr-2 text-amber-600"></i>Label Menu (Opsional)
-                        </label>
+                        <label for="menuLabel" class="block text-gray-700 font-bold mb-2"><i class="fas fa-star mr-2 text-amber-600"></i>Label Menu (Opsional)</label>
                         <select id="menuLabel" name="label" class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-300 transition-all">
                             <option value="">Tanpa Label</option>
                             <option value="hot">Hot</option>
                             <option value="best_seller">Best Seller</option>
                         </select>
                     </div>
-
                     <div class="md:col-span-2">
-                        <label for="menuDeskripsi" class="block text-gray-700 font-bold mb-2">
-                            <i class="fas fa-align-left mr-2 text-amber-600"></i>Deskripsi
-                        </label>
+                        <label for="menuDeskripsi" class="block text-gray-700 font-bold mb-2"><i class="fas fa-align-left mr-2 text-amber-600"></i>Deskripsi</label>
                         <textarea id="menuDeskripsi" name="deskripsi" rows="3" class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-300 transition-all" placeholder="Deskripsi singkat..."></textarea>
                     </div>
                     <div class="md:col-span-2">
-                        <label for="menuImage" class="block text-gray-700 font-bold mb-2">
-                            <i class="fas fa-image mr-2 text-amber-600"></i>Foto Menu
-                        </label>
+                        <label for="menuImage" class="block text-gray-700 font-bold mb-2"><i class="fas fa-image mr-2 text-amber-600"></i>Foto Menu</label>
                         <input type="file" id="menuImage" name="gambar" accept="image/*" class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-300 transition-all">
                         <div id="imagePreviewContainer" class="mt-3 hidden">
                             <img id="imagePreview" class="image-preview" src="" alt="Preview">
@@ -226,6 +157,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const assetBase = container.dataset.assetBase;
     const csrfToken = container.dataset.csrfToken;
 
+    // Element References
     const modal = document.getElementById('menuModal');
     const menuForm = document.getElementById('menuForm');
     const modalTitle = document.getElementById('modalTitle');
@@ -241,13 +173,17 @@ document.addEventListener("DOMContentLoaded", function() {
     const formMethod = document.getElementById('formMethod');
     const errorContainer = document.getElementById('error-container');
     const errorList = document.getElementById('error-list');
+    
     const menuGrid = document.getElementById('menuGrid');
     const emptyState = document.getElementById('emptyState');
+    const loadingState = document.getElementById('loadingState');
     const searchInput = document.getElementById('searchInput');
     const categoryFilter = document.getElementById('categoryFilter');
     
-    let allMenus = @json($menus);
+    let currentMenus = @json($menus);
     let debounceTimer;
+
+    // --- UTILITIES ---
 
     function getCategoryColor(category) {
         const colors = {
@@ -272,15 +208,61 @@ document.addEventListener("DOMContentLoaded", function() {
     function formatPrice(price) {
         return Number(price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
+
+    // --- CORE: AJAX FILTERING ---
+
+    async function fetchMenus() {
+        const searchTerm = searchInput.value;
+        const category = categoryFilter.value;
+
+        menuGrid.classList.add('hidden');
+        emptyState.classList.add('hidden');
+        loadingState.classList.remove('hidden');
+
+        try {
+            const params = new URLSearchParams();
+            if (category !== 'all') params.append('kategori', category);
+            if (searchTerm) params.append('search', searchTerm);
+
+            const response = await fetch(`${updateUrlBase}?${params.toString()}`, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+            });
+
+            const result = await response.json();
+            currentMenus = result.menus;
+            renderMenus(currentMenus);
+
+        } catch (error) {
+            console.error("Error fetching menus:", error);
+            window.showToast("Gagal memuat data menu", "error");
+        } finally {
+            loadingState.classList.add('hidden');
+        }
+    }
+
+    function renderMenus(menus) {
+        menuGrid.innerHTML = '';
+        if (menus.length === 0) {
+            menuGrid.classList.add('hidden');
+            menuGrid.style.display = 'none';
+            emptyState.classList.remove('hidden');
+        } else {
+            menuGrid.classList.remove('hidden');
+            menuGrid.style.display = 'grid';
+            emptyState.classList.add('hidden');
+            menus.forEach(menu => {
+                menuGrid.appendChild(createMenuCard(menu));
+            });
+        }
+    }
     
     function createMenuCard(menu) {
         const card = document.createElement('div');
         card.className = 'menu-card bg-white rounded-2xl shadow-xl overflow-hidden animate-fade-in relative';
         card.dataset.id = menu.id;
-        card.dataset.name = menu.nama.toLowerCase();
-        card.dataset.category = menu.kategori;
+        const colorClass = getCategoryColor(menu.kategori); 
+        const categoryDisplay = getCategoryName(menu.kategori);
 
-        const colorClass = getCategoryColor(menu.kategori);
         const imageHtml = menu.gambar ? 
             `<img src="${assetBase}/${menu.gambar}" alt="${menu.nama}" class="w-full h-48 object-cover">` : 
             `<div class="w-full h-48 bg-gradient-to-br from-amber-200 to-yellow-200 flex items-center justify-center"><i class="fas fa-image text-6xl text-amber-400"></i></div>`;
@@ -297,12 +279,12 @@ document.addEventListener("DOMContentLoaded", function() {
             <div class="p-6">
                 <div class="flex justify-between items-start mb-3">
                     <h3 class="text-xl font-bold text-gray-800">${menu.nama}</h3>
-                    <span class="category-badge ${colorClass} text-white">${getCategoryName(menu.kategori)}</span>
+                    <span class="category-badge ${colorClass} text-white">${categoryDisplay}</span>
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-2xl font-bold text-amber-700">Rp ${formatPrice(menu.harga)}</span>
                     <div class="flex space-x-2">
-                        <button data-menu='${JSON.stringify(menu)}' class="edit-menu-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 transform hover:scale-105">
+                        <button class="edit-menu-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 transform hover:scale-105">
                             <i class="fas fa-edit mr-1"></i>Edit
                         </button>
                         <form action="${updateUrlBase}/${menu.id}" method="POST" class="delete-form">
@@ -317,46 +299,21 @@ document.addEventListener("DOMContentLoaded", function() {
             </div>
         `;
         
-        card.querySelector('.edit-menu-btn').addEventListener('click', function() {
-            openEditModal(menu);
-        });
+        const editBtn = card.querySelector('.edit-menu-btn');
+        editBtn.addEventListener('click', function() { openEditModal(menu); });
         
-        card.querySelector('.delete-form').addEventListener('submit', function(e) {
+        const deleteForm = card.querySelector('.delete-form');
+        deleteForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const form = this;
-            const cardElement = form.closest('.menu-card');
-            const menuId = cardElement.dataset.id;
-            
             window.showConfirmModal('Apakah Anda yakin ingin menghapus menu ini?', () => {
-                deleteMenu(form, cardElement, menuId);
+                deleteMenu(deleteForm, menu.id);
             });
         });
 
         return card;
     }
 
-    function renderMenus() {
-        const searchTerm = searchInput.value.toLowerCase();
-        const category = categoryFilter.value;
-        
-        const filteredMenus = allMenus.filter(menu => {
-            const matchesSearch = menu.nama.toLowerCase().includes(searchTerm);
-            const matchesCategory = category === 'all' || menu.category === category;
-            return matchesSearch && matchesCategory;
-        });
-
-        menuGrid.innerHTML = '';
-        if (filteredMenus.length === 0) {
-            menuGrid.style.display = 'none';
-            emptyState.classList.remove('hidden');
-        } else {
-            menuGrid.style.display = 'grid';
-            emptyState.classList.add('hidden');
-            filteredMenus.forEach(menu => {
-                menuGrid.appendChild(createMenuCard(menu));
-            });
-        }
-    }
+    // --- MODAL FUNCTIONS ---
 
     function openAddModal() {
         menuForm.reset();
@@ -399,93 +356,46 @@ document.addEventListener("DOMContentLoaded", function() {
         modal.classList.remove('active');
         menuForm.reset();
     }
+    window.closeModal = closeModal;
 
-    async function deleteMenu(form, cardElement, menuId) {
+    // --- CRUD OPERATIONS ---
+
+    async function deleteMenu(form, menuId) {
         try {
             const response = await fetch(form.action, {
                 method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json',
-                },
+                headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
                 body: new FormData(form) 
             });
-
             const result = await response.json();
 
-            if (!response.ok) {
-                throw new Error(result.message || 'Gagal menghapus menu');
-            }
+            if (!response.ok) throw new Error(result.message || 'Gagal menghapus menu');
             
+            // UPDATE WARNA DISINI: 'error' = Merah
             window.showToast(result.message, 'error');
             
-            allMenus = allMenus.filter(m => m.id != menuId);
-            renderMenus();
-
+            fetchMenus();
         } catch (error) {
             console.error('Delete Error:', error);
             window.showToast(error.message, 'error');
         }
     }
 
-    document.getElementById('add-menu-btn').addEventListener('click', openAddModal);
-    const addBtnEmpty = document.getElementById('add-menu-btn-empty');
-    if (addBtnEmpty) {
-        addBtnEmpty.addEventListener('click', openAddModal);
-    }
-    document.getElementById('cancel-modal-btn').addEventListener('click', closeModal);
-    
-    const closeModalButton = document.getElementById('close-modal-btn');
-    if(closeModalButton) {
-        closeModalButton.addEventListener('click', closeModal);
-    }
-
-    searchInput.addEventListener('input', () => {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(renderMenus, 300);
-    });
-    categoryFilter.addEventListener('change', renderMenus);
-
-    if (menuImage) {
-        menuImage.onchange = (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    imagePreview.src = event.target.result;
-                    imagePreviewContainer.classList.remove('hidden');
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-    }
-
     if (menuForm) {
         menuForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-
-            if (!menuForm.checkValidity()) {
-                menuForm.reportValidity();
-                return;
-            }
+            if (!menuForm.checkValidity()) { menuForm.reportValidity(); return; }
             
             errorContainer.classList.add('hidden');
-
             const formData = new FormData(menuForm);
-            if (formMethod.value === 'PUT') {
-                formData.append('_method', 'PUT');
-            }
+            if (formMethod.value === 'PUT') formData.append('_method', 'PUT');
 
             try {
                 const response = await fetch(menuForm.action, {
                     method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Accept': 'application/json',
-                    },
+                    headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
                     body: formData,
                 });
-
                 const result = await response.json();
 
                 if (!response.ok) {
@@ -503,51 +413,49 @@ document.addEventListener("DOMContentLoaded", function() {
                 } else {
                     closeModal();
                     
-                    if (formMethod.value === 'PUT') {
-                        const updatedMenu = result.menu;
-                        const menuIndex = allMenus.findIndex(m => m.id === updatedMenu.id);
-                        if (menuIndex > -1) {
-                            allMenus[menuIndex] = updatedMenu;
-                        }
-                        window.showToast(result.message, 'info');
-                    } else {
-                        const newMenu = result.menu;
-                        allMenus.push(newMenu);
-                        window.showToast(result.message, 'success');
-                    }
+                    // UPDATE WARNA DISINI: 
+                    // Jika PUT (Edit) -> 'info' (Biru)
+                    // Jika POST (Tambah) -> 'success' (Hijau)
+                    const notifType = formMethod.value === 'PUT' ? 'info' : 'success';
+                    window.showToast(result.message, notifType);
                     
-                    renderMenus();
+                    fetchMenus();
                 }
-
             } catch (error) {
                 console.error('Error:', error);
-                errorList.innerHTML = '<li>' + error.message + '</li>';
-                errorContainer.classList.remove('hidden');
+                window.showToast(error.message, 'error');
             }
         });
     }
 
-    if (modal) {
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
-    }
+    document.getElementById('add-menu-btn').addEventListener('click', openAddModal);
+    const addBtnEmpty = document.getElementById('add-menu-btn-empty');
+    if (addBtnEmpty) addBtnEmpty.addEventListener('click', openAddModal);
+    document.getElementById('cancel-modal-btn').addEventListener('click', closeModal);
     
-    document.querySelectorAll('.delete-form').forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const cardElement = form.closest('.menu-card');
-            const menuId = cardElement.dataset.id;
+    const closeModalButton = document.getElementById('close-modal-btn');
+    if(closeModalButton) closeModalButton.addEventListener('click', closeModal);
 
-            window.showConfirmModal('Apakah Anda yakin ingin menghapus menu ini?', () => {
-                deleteMenu(form, cardElement, menuId);
-            });
-        });
+    searchInput.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(fetchMenus, 500);
     });
+    categoryFilter.addEventListener('change', fetchMenus);
 
-    renderMenus();
+    if (menuImage) {
+        menuImage.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    imagePreview.src = event.target.result;
+                    imagePreviewContainer.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+    }
+
+    renderMenus(currentMenus);
 });
 </script>

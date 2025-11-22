@@ -4,17 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'Batatua 1928 - Admin Panel' }}</title>
+    
+    {{-- 1. Styles & Tailwind --}}
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="{{ asset('Assets/Logo Kedai Batatua 1928.png') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    {{-- 2. Chart JS --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    {{-- 3. WAJIB: ALPINE.JS (Ini yang sebelumnya hilang) --}}
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    {{-- 4. Vite (Opsional, tapi bagus jika ada) --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     <style>
+        [x-cloak] { display: none !important; } /* Mencegah kedipan saat loading */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in {
             animation: fadeIn 0.6s ease-out;
+        }
+        .animate-fade-in-up {
+            animation: fadeIn 0.4s ease-out;
         }
         .stat-card {
             transition: all 0.3s ease;
@@ -61,6 +76,7 @@
 </head>
 <body class="bg-gradient-to-br from-amber-50 via-yellow-50 to-amber-100">
     <div class="flex min-h-screen">
+        {{-- Sidebar --}}
         <div class="w-80 p-8 flex flex-col shadow-2xl" style="background: linear-gradient(180deg, #A18686 0%, #8B6F6F 100%);">
             <a href="{{ route('home') }}" class="group">
                 <div class="text-center mb-16 animate-fade-in">
@@ -108,14 +124,17 @@
             </form>
         </div>
         
+        {{-- Main Content --}}
         <div class="flex-1 p-8 overflow-y-auto">
             {{ $slot }}
         </div>
     </div>
 
+    {{-- Toast Global Container --}}
     <div id="toastContainer" class="fixed bottom-10 right-10 z-[1001] w-full max-w-xs space-y-3">
     </div>
 
+    {{-- Manual Modal (JS Biasa) - Biarkan saja untuk kompatibilitas fitur lain --}}
     <div id="confirmModal" class="custom-modal">
         <div class="modal-content bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md animate-fade-in">
             <h2 id="confirmTitle" class="text-2xl font-bold mb-4 text-gray-900">Konfirmasi Tindakan</h2>
@@ -133,6 +152,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            // Toast Notification Logic
             window.showToast = function(message, type = 'success') {
                 const toastContainer = document.getElementById('toastContainer');
                 if (!toastContainer) return;
@@ -162,6 +182,7 @@
                 }, 3000);
             }
 
+            // Confirm Modal Logic (JS Biasa)
             window.showConfirmModal = function(message, onConfirm) {
                 const confirmModal = document.getElementById('confirmModal');
                 const confirmMessage = document.getElementById('confirmMessage');
@@ -173,15 +194,18 @@
                 confirmMessage.textContent = message;
                 confirmModal.classList.add('active');
 
-                confirmBtnYes.replaceWith(confirmBtnYes.cloneNode(true));
-                confirmBtnNo.replaceWith(confirmBtnNo.cloneNode(true));
+                // Clone button untuk menghilangkan event listener lama
+                const newYesBtn = confirmBtnYes.cloneNode(true);
+                const newNoBtn = confirmBtnNo.cloneNode(true);
+                confirmBtnYes.parentNode.replaceChild(newYesBtn, confirmBtnYes);
+                confirmBtnNo.parentNode.replaceChild(newNoBtn, confirmBtnNo);
 
-                document.getElementById('confirmBtnYes').addEventListener('click', () => {
+                newYesBtn.addEventListener('click', () => {
                     if(onConfirm) onConfirm();
                     confirmModal.classList.remove('active');
                 });
                 
-                document.getElementById('confirmBtnNo').addEventListener('click', () => {
+                newNoBtn.addEventListener('click', () => {
                     confirmModal.classList.remove('active');
                 });
             }
